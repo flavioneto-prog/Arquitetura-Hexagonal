@@ -6,7 +6,7 @@ namespace Domain.Ports
     {
         Task<IEnumerable<User>> GetAllUsersAsync();
 
-        Task<User> GetUserAsync(Guid id);
+        Task<User?> GetUserAsync(Guid id);
 
         Task<User> AddNewUserAsync(User user);
 

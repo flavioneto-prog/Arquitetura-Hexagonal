@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Domain.Entities;
 using Domain.Ports;
 using Microsoft.AspNetCore.Mvc;
@@ -7,28 +6,31 @@ namespace ArquiteturaHexagonal.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class UsersController(IUserService userService, ICacheService cacheService) : ControllerBase
+    public class UsersController(IUserService userService) : ControllerBase
     {
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()
         {
             var users = await userService.GetAllUsersAsync();
 
+            if (!users.Any())
+            {
+                return NotFound();
+            }
+
             return Ok(users);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:Guid}")]
         public async Task<IActionResult> GetUser(Guid id)
         {
-            var userBytes = await cacheService.GetByKeyAsync("user_" + id, default);
-            if (userBytes?.Length > 0)
-            {
-                var userCache = JsonSerializer.Deserialize<User>(userBytes);
-                return Ok(userCache);
-            }
-            
             var user = await userService.GetUserAsync(id);
-            await cacheService.AddNewAsync("user_" + user.Id, JsonSerializer.Serialize(user), 60);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
             return Ok(user);
         }
 
@@ -36,9 +38,9 @@ namespace ArquiteturaHexagonal.Controllers
         public async Task<IActionResult> RegisterUser(User user)
         {
             await userService.AddNewUserAsync(user);
-            await cacheService.AddNewAsync("user_" + user.Id, JsonSerializer.Serialize(user), 60);
             return Ok(user);
         }
+
         [HttpPut("{id:Guid}")]
         public async Task<IActionResult> UpdateUser(Guid id, User user)
         {
@@ -51,10 +53,17 @@ namespace ArquiteturaHexagonal.Controllers
 
             return Ok(user);
         }
+
         [HttpDelete("{id:Guid}")]
         public async Task<IActionResult> DeleteUser(Guid id)
         {
             var user = await userService.DeleteUserAsync(id);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
             return Ok(user);
         }
     }

@@ -1,9 +1,10 @@
-﻿using Domain.Entities;
+﻿using System.Text.Json;
+using Domain.Entities;
 using Domain.Ports;
 
 namespace Application.Services
 {
-    public class UserServiceManager(IUserRepository userRepository) : IUserService
+    public class UserServiceManager(IUserRepository userRepository, ICacheService cacheService) : IUserService
     {
         public async Task<IEnumerable<User>> GetAllUsersAsync()
         {
@@ -14,6 +15,7 @@ namespace Application.Services
         public async Task<User> AddNewUserAsync(User user)
         {
             await userRepository.InsertAsync(user);
+            await cacheService.AddNewAsync("user_" + user.Id, JsonSerializer.Serialize(user), 60);
             return user;
         }
 
@@ -29,9 +31,22 @@ namespace Application.Services
             return userDeleted;
         }
 
-        public async Task<User> GetUserAsync(Guid id)
+        public async Task<User?> GetUserAsync(Guid id)
         {
+            var userBytes = await cacheService.GetByKeyAsync("user_" + id, default);
+            if (userBytes?.Length > 0)
+            {
+                var userCache = JsonSerializer.Deserialize<User>(userBytes);
+                return userCache;
+            }
+
             var user = await userRepository.GetUserAsync(id);
+
+            if (user is not null)
+            {
+                await cacheService.AddNewAsync("user_" + user.Id, JsonSerializer.Serialize(user), 60);
+            }
+
             return user;
         }
     }
