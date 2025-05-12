@@ -1,0 +1,6 @@
+@ArquiteturaHexagonal_HostAddress = http://localhost:5081
+
+GET {{ArquiteturaHexagonal_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

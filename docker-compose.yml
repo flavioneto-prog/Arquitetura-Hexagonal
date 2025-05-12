@@ -1,0 +1,26 @@
+services:
+  arquiteturahexagonal:
+    image: ${DOCKER_REGISTRY-}arquiteturahexagonal
+    container_name: users.api
+    build:
+      context: .
+      dockerfile: ArquiteturaHexagonal/Dockerfile
+    depends_on: [postgreSql]
+  
+  postgreSql:
+    image: postgres
+    container_name: users.database
+    environment:
+      - POSTGRES_DB=applicationDb
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    hostname: postgreSql
+    ports:
+       - 5432:5432
+
+  redis:
+    image: redis
+    container_name: users.cache
+    restart: always
+    ports:
+      - '6379-6379'
