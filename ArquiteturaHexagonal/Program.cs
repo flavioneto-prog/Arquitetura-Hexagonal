@@ -12,6 +12,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddPostgreSqlService(builder.Configuration);
 builder.Services.AddCacheRedisService(builder.Configuration);
 builder.Services.AddApplicationService();
+builder.Services.AddVersioning();
 
 var app = builder.Build();
 

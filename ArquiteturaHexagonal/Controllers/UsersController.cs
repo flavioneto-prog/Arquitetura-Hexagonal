@@ -1,13 +1,16 @@
+using Asp.Versioning;
 using Domain.Entities;
 using Domain.Ports;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ArquiteturaHexagonal.Controllers
 {
+    [ApiVersion(1)]
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v{v:apiVersion}/[controller]")]
     public class UsersController(IUserService userService) : ControllerBase
     {
+        [MapToApiVersion(1)]
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()
         {
@@ -21,6 +24,7 @@ namespace ArquiteturaHexagonal.Controllers
             return Ok(users);
         }
 
+        [MapToApiVersion(1)]
         [HttpGet("{id:Guid}")]
         public async Task<IActionResult> GetUser(Guid id)
         {
@@ -34,6 +38,7 @@ namespace ArquiteturaHexagonal.Controllers
             return Ok(user);
         }
 
+        [MapToApiVersion(1)]
         [HttpPost]
         public async Task<IActionResult> RegisterUser(User user)
         {
@@ -41,6 +46,7 @@ namespace ArquiteturaHexagonal.Controllers
             return Ok(user);
         }
 
+        [MapToApiVersion(1)]
         [HttpPut("{id:Guid}")]
         public async Task<IActionResult> UpdateUser(Guid id, User user)
         {
@@ -54,6 +60,7 @@ namespace ArquiteturaHexagonal.Controllers
             return Ok(user);
         }
 
+        [MapToApiVersion(1)]
         [HttpDelete("{id:Guid}")]
         public async Task<IActionResult> DeleteUser(Guid id)
         {
