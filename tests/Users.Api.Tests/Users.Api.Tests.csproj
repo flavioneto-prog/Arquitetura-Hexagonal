@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ArquiteturaHexagonal\src\Users.Api\Users.Api.csproj" />
+    <ProjectReference Include="..\..\src\Users.Api\Users.Api.csproj" />
   </ItemGroup>
 
   <ItemGroup>
