@@ -1,10 +1,10 @@
 services:
-  arquiteturahexagonal:
-    image: ${DOCKER_REGISTRY-}arquiteturahexagonal
+  users.api:
+    image: ${DOCKER_REGISTRY-}usersapi
     container_name: users.api
     build:
       context: .
-      dockerfile: ArquiteturaHexagonal/Dockerfile
+      dockerfile: src/Users.Api/Dockerfile
     depends_on: [postgreSql]
   
   postgreSql:

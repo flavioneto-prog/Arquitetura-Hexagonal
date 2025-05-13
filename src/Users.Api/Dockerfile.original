@@ -7,27 +7,27 @@ WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
 
-
 # Esta fase é usada para compilar o projeto de serviço
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["ArquiteturaHexagonal/ArquiteturaHexagonal.csproj", "ArquiteturaHexagonal/"]
-COPY ["Application/Application.csproj", "Application/"]
-COPY ["Domain/Domain.csproj", "Domain/"]
-COPY ["Infra.Data/Infra.Data.csproj", "Infra.Data/"]
-RUN dotnet restore "./ArquiteturaHexagonal/ArquiteturaHexagonal.csproj"
+COPY ["src/Users.Api/Users.Api.csproj", "src/Users.Api/"]
+COPY ["src/Application/Application.csproj", "src/Application/"]
+COPY ["src/Domain/Domain.csproj", "src/Domain/"]
+COPY ["src/Infra.Cache/Infra.Cache.csproj", "src/Infra.Cache/"]
+COPY ["src/Infra.Data/Infra.Data.csproj", "src/Infra.Data/"]
+RUN dotnet restore "./src/Users.Api/Users.Api.csproj"
 COPY . .
-WORKDIR "/src/ArquiteturaHexagonal"
-RUN dotnet build "./ArquiteturaHexagonal.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/src/Users.Api"
+RUN dotnet build "./Users.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # Esta fase é usada para publicar o projeto de serviço a ser copiado para a fase final
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./ArquiteturaHexagonal.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./Users.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # Esta fase é usada na produção ou quando executada no VS no modo normal (padrão quando não está usando a configuração de Depuração)
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "ArquiteturaHexagonal.dll"]
+ENTRYPOINT ["dotnet", "Users.Api.dll"]

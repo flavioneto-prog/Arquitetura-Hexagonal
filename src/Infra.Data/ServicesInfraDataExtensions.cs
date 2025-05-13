@@ -19,7 +19,7 @@ namespace Infra.Data
         public static IServiceCollection AddPostgreSqlService(this IServiceCollection services, IConfiguration configuration)
         {
             var connectionString = configuration.GetConnectionString("PostgreSQL");
-            services.AddDbContext<PostgreSqlContext>(options => options.UseNpgsql(connectionString, options => options.MigrationsAssembly("ArquiteturaHexagonal")));
+            services.AddDbContext<PostgreSqlContext>(options => options.UseNpgsql(connectionString, options => options.MigrationsAssembly("Users.Api")));
             services.AddTransient<IUserRepository, UserRepository>();
             return services;
         }

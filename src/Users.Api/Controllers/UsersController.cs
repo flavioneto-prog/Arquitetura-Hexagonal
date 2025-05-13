@@ -16,7 +16,7 @@ namespace ArquiteturaHexagonal.Controllers
         {
             var users = await userService.GetAllUsersAsync();
 
-            if (!users.Any())
+            if (users is null || !users.Any())
             {
                 return NotFound();
             }
